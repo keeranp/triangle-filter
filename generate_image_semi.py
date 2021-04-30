@@ -15,11 +15,10 @@ real_image_name = Path(sys.argv[1])
 image_directory = str(real_image_name.parent)
 
 ''' Setting up the processed image '''
-#real_image = Image.open(real_image_name)
-real_image = cv2.imread(str(real_image_name))
-#real_image_pixels = real_image.load()
+real_image = Image.open(real_image_name)
+real_image_pixels = real_image.load()
 final_image = Image.new('RGB', (1920, 1080), 'white')
-image_size_ratio = (real_image.shape[0]/final_image.size[0],real_image.shape[0]/final_image.size[0])
+image_size_ratio = (real_image.size[0]/final_image.size[0],real_image.size[0]/final_image.size[0])
 images = [final_image] #Array containing all the images for the video
 
 ''' Processing the image '''
@@ -29,7 +28,8 @@ continue_processing = True
 
 while continue_processing:
     new_image = final_image.copy()
-    if process_image(new_image, real_image, image_size_ratio, len(sys.argv) >= 3):
+
+    if process_image(new_image, real_image, real_image_pixels, image_size_ratio, len(sys.argv) >= 3):
         final_image = new_image
         successful_iteration += 1
         if(successful_iteration % 100 == 0):

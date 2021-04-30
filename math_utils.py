@@ -30,9 +30,9 @@ def draw_triangle(image, coords, color):
     draw = ImageDraw.Draw(image)
     draw.polygon(coords, color)
 
-def process_image(image, real_image, image_size_ratio, precise):
-    coords = create_triangle_coords(real_image.shape)
-    color = get_real_image_color(coords, real_image, real_image.size)
+def process_image(image, real_image, real_image_pixels, image_size_ratio, precise):
+    coords = create_triangle_coords(real_image.size)
+    color = get_real_image_color(coords, real_image_pixels, real_image.size)
 
     if precise:
         crop_points = (
