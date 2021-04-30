@@ -1,17 +1,21 @@
 import time
-import sys
 import cv2
 import numpy
+import argparse
 from math_utils import process_image
 from pathlib import Path
 from PIL import Image
 
 MAX_ITERATION = 50000
+parser = argparse.ArgumentParser(description='Apply triangle filter to an image')
+parser.add_argument('-f','--file',required=True,type=str,metavar='',help='The location of the image where the filter will be applied')
+parser.add_argument('-p','--precise',type=bool,metavar='',help='If precision is true the processed image will be better but it will take a lot more time')
+args = parser.parse_args()
 
 start_time = time.time()
 
 ''' Getting the filename and the directory to save the processed files '''
-real_image_name = Path(sys.argv[1])
+real_image_name = Path(args.file)
 image_directory = str(real_image_name.parent)
 
 ''' Setting up the processed image '''
@@ -29,14 +33,14 @@ continue_processing = True
 while continue_processing:
     new_image = final_image.copy()
 
-    if process_image(new_image, real_image, real_image_pixels, image_size_ratio, len(sys.argv) >= 3):
+    if process_image(new_image, real_image, real_image_pixels, image_size_ratio, args.precise):
         final_image = new_image
         successful_iteration += 1
         if(successful_iteration % 100 == 0):
             images.append(final_image.copy())
     if i % 2000 == 0:
         print('Successful Iteration: ' + str(successful_iteration) + ', iteration: ' + str(i) + ', ' + str(successful_iteration/i))
-    if(len(sys.argv) >= 3):
+    if args.precise:
         continue_processing = successful_iteration/i > 0.1 or i < 100
     else:
         continue_processing = i < MAX_ITERATION
